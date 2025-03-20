@@ -28,9 +28,7 @@ from mobsf.MobSF.utils import (
 
 
 logger = logging.getLogger(__name__)
-
 # 수정된 부분
-
 
 MOBSF_UPLOAD_DIR = os.path.expanduser("~/.MobSF/uploads")
 
@@ -41,7 +39,7 @@ def get_apk_path(apk_hash):
     if apk_files:
         return apk_files[0]  # 첫 번째 APK 반환
     else:
-        logger.error(f"❌ APK 파일을 찾을 수 없음: {apk_dir}")
+        logger.error(f" APK 파일을 찾을 수 없음: {apk_dir}")
         return None
 
 def extract_nested_apk(apk_hash):
@@ -61,12 +59,25 @@ def extract_nested_apk(apk_hash):
                     nested_apk_path = os.path.join(extracted_path, os.path.basename(file))
                     with open(nested_apk_path, "wb") as f:
                         f.write(zip_ref.read(file))
-                    logger.info(f"📂 Nested APK 추출 완료: {nested_apk_path}")
+                    logger.info(f" Nested APK 추출 완료: {nested_apk_path}")
                     nested_apk_files.append(nested_apk_path)
     except Exception as e:
-        logger.error(f"❌ Nested APK 추출 실패: {e}")
+        logger.error(f" Nested APK 추출 실패: {e}")
 
     return nested_apk_files
+
+def safe_rename(src, dst):
+    """
+    대상 파일(dst)이 존재하면 삭제 후 src를 dst로 이동.
+    필요에 따라 고유한 이름 생성 로직을 추가할 수 있음.
+    """
+    if os.path.exists(dst):
+        try:
+            os.remove(dst)
+            logger.info(f" 기존 파일 삭제: {dst}")
+        except Exception as e:
+            logger.error(f" 기존 파일 삭제 실패 ({dst}): {e}")
+    os.rename(src, dst)
 
 def extract_dex_from_nested_apk(nested_apks):
     """Nested APK 내부에서 DEX 파일을 추출"""
@@ -83,12 +94,14 @@ def extract_dex_from_nested_apk(nested_apks):
             for dex in nested_dex_files:
                 new_dex_name = f"nested_{os.path.basename(nested_apk)}_{os.path.basename(dex)}"
                 new_dex_path = os.path.join(nested_apk_extract_dir, new_dex_name)
-                os.rename(dex, new_dex_path)  
-                dex_files.append(new_dex_path)
-                logger.info(f"📂 Nested DEX 추출 완료: {new_dex_path}")
-
+                try:
+                    safe_rename(dex, new_dex_path)
+                    dex_files.append(new_dex_path)
+                    logger.info(f" Nested DEX 추출 완료: {new_dex_path}")
+                except Exception as e:
+                    logger.error(f" Nested APK DEX 추출 실패: {e}")
         except Exception as e:
-            logger.error(f"❌ Nested APK DEX 추출 실패: {e}")
+            logger.error(f" Nested APK DEX 추출 실패: {e}")
 
     return dex_files
 
@@ -96,7 +109,7 @@ def get_dex_files(apk_hash):
     """APK 및 Nested APK에서 DEX 파일을 찾아서 분석"""
     dex_files = []
     decrypted_dex_files = []
-    
+
     apk_path = get_apk_path(apk_hash)
     if not apk_path:
         return []
@@ -114,31 +127,31 @@ def get_dex_files(apk_hash):
     nested_dex_files = extract_dex_from_nested_apk(nested_apks)
     dex_files.extend(nested_dex_files)
 
-    logger.info(f"🔍 최종 DEX 파일 목록: {dex_files}")
+    logger.info(f" 최종 DEX 파일 목록: {dex_files}")
 
     # ✅ DEX 복호화 처리
     for dex in dex_files:
-        logger.info(f"🔍 Found DEX: {dex}")
+        logger.info(f" Found DEX: {dex}")
 
         if "kill-classes.dex" in dex or "kill-classes2.dex" in dex:
-            logger.info(f"🔓 암호화된 DEX 발견: {dex}, 복호화 진행 중...")
+            logger.info(f" 암호화된 DEX 발견: {dex}, 복호화 진행 중...")
             decrypted_dex = decrypt_dex(dex)
 
             if decrypted_dex:
                 decrypted_dex_path = dex.replace(".dex", "-decrypted.dex")
-                os.rename(decrypted_dex, decrypted_dex_path)  
+                os.rename(decrypted_dex, decrypted_dex_path)
                 decrypted_dex_files.append(decrypted_dex_path)
-                logger.info(f"✅ 복호화 완료: {decrypted_dex_path}")
-                
+                logger.info(f" 복호화 완료: {decrypted_dex_path}")
+
                 # ✅ 원본 `kill-classes.dex` 삭제
                 os.remove(dex)
-                logger.info(f"🗑️ 원본 DEX 삭제: {dex}")
+                logger.info(f" 원본 DEX 삭제: {dex}")
             else:
-                logger.warning(f"❌ 복호화 실패: {dex} (올바른 DEX 파일이 아님)")
+                logger.warning(f" 복호화 실패: {dex} (올바른 DEX 파일이 아님)")
         else:
             decrypted_dex_files.append(dex)
 
-    logger.info(f"🔍 최종 분석 대상 DEX 파일 목록: {decrypted_dex_files}")
+    logger.info(f" 최종 분석 대상 DEX 파일 목록: {decrypted_dex_files}")
     return decrypted_dex_files
 
 

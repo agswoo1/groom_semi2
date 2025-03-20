@@ -161,31 +161,32 @@ def apk_analysis_task(checksum, app_dic, rescan, queue=False):
             checksum,
             app_dic['app_path'],
             app_dic['app_dir'])
-        
+
         #수정된 부분
-        
+
         # ✅ DEX 파일 복호화 및 분석 대상 설정
         try:
+            dex_files = None
             dex_files = get_dex_files(str(app_dic['app_dir']))
 
             # 🔹 복호화된 `kill-classes.dex`가 있으면 원본을 대체
             dex_files = [
-                dex for dex in dex_files 
+                dex for dex in dex_files
                 if "kill-classes.dex" not in dex  # 원본 kill-classes.dex 제외
             ]
 
                 # ✅ 복호화된 DEX가 포함되어 있는지 디버깅 출력
             if "kill-classes-decrypted.dex" in dex_files:
-                    print("✅ 복호화된 DEX가 포함됨! (get_dex_files 이후)")
+                    print(" 복호화된 DEX가 포함됨! (get_dex_files 이후)")
             else:
-                print("❌ 복호화된 DEX가 MobSF에서 누락됨! (get_dex_files 이후)")
+                print(" 복호화된 DEX가 MobSF에서 누락됨! (get_dex_files 이후)")
 
-            logger.info(f"🔍 최종 분석 대상 DEX 파일 목록: {dex_files}")
+            logger.info(f" 최종 분석 대상 DEX 파일 목록: {dex_files}")
 
             # ✅ MobSF가 사용해야 할 dex 파일 설정
             app_dic["dex_files"] = dex_files
         except Exception as e:
-            logger.error(f"❌ DEX 파일 처리 중 오류 발생: {e}")
+            logger.error(f" DEX 파일 처리 중 오류 발생: {e}")
 
 
 
@@ -216,9 +217,9 @@ def apk_analysis_task(checksum, app_dic, rescan, queue=False):
         apkid_results = apkid.apkid_analysis(
             checksum,
             app_dic['app_path'])
-        
+
         # ✅ 복호화된 DEX 추가 분석 (APK 결과에 병합) 추가된 부분**
-        logger.info(f"🔍 최종 분석 대상 DEX 파일 목록 (APKiD 실행 전): {dex_files}")
+        logger.info(f" 최종 분석 대상 DEX 파일 목록 (APKiD 실행 전): {dex_files}")
         for dex_file in app_dic["dex_files"]:
             dex_apkid_result = apkid.apkid_analysis(
                 checksum,
@@ -226,7 +227,7 @@ def apk_analysis_task(checksum, app_dic, rescan, queue=False):
             if dex_apkid_result:
                 apkid_results.update(dex_apkid_result)  # ✅ 기존 결과에 병합
 
-        logger.info(f"🔍 APKiD 최종 분석 대상: {apkid_results.keys()}")
+        logger.info(f" APKiD 최종 분석 대상: {apkid_results.keys()}")
 
         trackers = Trackers.Trackers(
             checksum,
@@ -276,8 +277,8 @@ def apk_analysis_task(checksum, app_dic, rescan, queue=False):
         #수정된 부분
         # ✅ 복호화된 DEX 파일 상태 저장
         dex_decryption_status = "복호화 완료" if any(dex.endswith(".dex") for dex in dex_files) else "암호화된 DEX 없음"
-        logger.info(f"🔍 [디버깅] dex_files: {dex_files}")
-        logger.info(f"🔍 [디버깅] dex_decryption_status: {dex_decryption_status}")
+        logger.info(f" [디버깅] dex_files: {dex_files}")
+        logger.info(f" [디버깅] dex_decryption_status: {dex_decryption_status}")
         context["dex_decryption_status"] = dex_decryption_status
 
 

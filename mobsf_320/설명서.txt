@@ -6,3 +6,7 @@ dex.py는 mosbsf/staticanalyzer/tools 에 생성
 mosbsf/staticanalyzer/viesw 에서는 android/apk.py, converter.py 부분 수정
 
 복호화 후 분석 과정 수정 코드 입니다!
+
++ 03.20 지은
+-> 윈도우에서는 이모티콘 cpc94 였나 암튼 인코딩 오류나서 싹다 삭제함
+-> 나머지는 순우님이 수정하신대로 

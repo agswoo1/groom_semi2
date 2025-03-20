@@ -28,8 +28,8 @@ def decrypt_dex(enc_file_path):
 
         file_size = len(encrypted_data)
         block_remainder = file_size % 16
-        logger.info(f"📂 파일 크기: {file_size} 바이트")
-        logger.info(f"🔢 16바이트 정렬 여부 (나머지): {block_remainder}")
+        logger.info(f" 파일 크기: {file_size} 바이트")
+        logger.info(f" 16바이트 정렬 여부 (나머지): {block_remainder}")
 
         cipher = AES.new(AES_KEY, AES.MODE_ECB)
         decrypted_data = cipher.decrypt(encrypted_data)
@@ -40,11 +40,11 @@ def decrypt_dex(enc_file_path):
             f.write(decrypted_data)
 
         if is_valid_dex(output_path):
-            logger.info(f"✅ 복호화된 DEX 파일이 정상적인 DEX 형식임: {output_path}")
+            logger.info(f" 복호화된 DEX 파일이 정상적인 DEX 형식임: {output_path}")
         else:
             logger.warning(f"⚠️ 복호화된 파일이 DEX 형식이 아님! {output_path}")
 
         return output_path
     except Exception as e:
-        logger.error(f"❌ DEX 복호화 중 오류 발생: {e}")
+        logger.error(f" DEX 복호화 중 오류 발생: {e}")
         return None
