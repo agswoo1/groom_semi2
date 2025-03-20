@@ -1,0 +1,7 @@
+수정된 부분
+android_binary_analysis.html
+475~484 부분 수정
+
+dex.py는 mosbsf/staticanalyzer/tools 에 생성
+mosbsf/staticanalyzer/viesw 에서는 android/apk.py, converter.py 부분 수정
+
