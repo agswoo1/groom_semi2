@@ -16,10 +16,32 @@ def copy_apk(original_apk_path):
     print(f"[+] 복사된 APK 경로: {copied_apk_path}")
     return copied_apk_path
 
+
 def delete_temp_apk(copied_apk_path):
-    """복사한 APK 파일을 삭제 (원본은 그대로 유지)."""
-    if os.path.isfile(copied_apk_path):
-        os.remove(copied_apk_path)
-        print(f"[+] 임시 APK 삭제 완료: {copied_apk_path}")
-    else:
-        print(f"[!] 삭제할 APK를 찾을 수 없습니다: {copied_apk_path}")
+    base_dir = os.path.dirname(copied_apk_path)
+    base_name = os.path.splitext(os.path.basename(copied_apk_path))[0]
+    temp_targets = [
+        copied_apk_path,
+        os.path.join(base_dir, base_name + ".zip"),
+        os.path.join(base_dir, "original_apk"),
+        os.path.join(base_dir, "decrypt_apk"),
+        os.path.join(base_dir, "apktool.yml"),
+        os.path.join(base_dir, "build"),
+        os.path.join(base_dir, "dist"),
+        os.path.join(base_dir, f"{base_name}.keystore"),
+    ]
+
+    print(f"[+] 임시 파일 삭제 시작...")
+
+    for path in temp_targets:
+        try:
+            if os.path.isfile(path):
+                os.remove(path)
+                print(f"[삭제됨] 파일: {path}")
+            elif os.path.isdir(path):
+                shutil.rmtree(path)
+                print(f"[삭제됨] 폴더: {path}")
+        except Exception as e:
+            print(f"[!] 삭제 실패: {path} -> {e}")
+
+    print("[+] 임시 파일 정리 완료!")
