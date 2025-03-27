@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# 환경 설정
+*.env
+
+# 가상 환경
+mobsf2/
+venv/
+env/
+ENV/
+*.egg-info/
+.eggs/
+
+# Mac 시스템 파일
+.DS_Store
+
+# Output artifacts
+output/
+samples/*.apk
+*.pdf
+
+# Node.js artifacts (for .js files if npm used)
+node_modules/
+*.log
+
+# Zip or binary files (선택적)
+*.zip
+*.apk
+*.dex
