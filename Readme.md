@@ -9,25 +9,25 @@
 
 ## 📁 프로젝트 구조
 
-├── apk_handler.py          # APK 복사, 리패키징, 서명 처리
-├── bypass_security.js      # 동적 분석 중 후킹할 보안 우회 스크립트 (Frida)
-├── config.ini              # 사용자 설정값 (MobSF 서버 경로 등)
-├── config_loader.py        # 설정값 로딩 모듈
-├── decryptor.py            # AES 키로 DEX 복호화 수행
-├── dynamic_pipeline.py     # MobSF 동적 분석 자동화
-├── mobsf_controller.py     # MobSF REST API 인터페이스
-├── static_pipeline.py      # MobSF 정적 분석 자동화
-└── main.py                 # 전체 파이프라인 실행 (Entry Point)
+── apk_handler.py          # APK 복사, 리패키징, 서명 처리
+── bypass_security.js      # 동적 분석 중 후킹할 보안 우회 스크립트 (Frida)
+── config.ini              # 사용자 설정값 (MobSF 서버 경로 등)
+── config_loader.py        # 설정값 로딩 모듈
+── decryptor.py            # AES 키로 DEX 복호화 수행
+── dynamic_pipeline.py     # MobSF 동적 분석 자동화
+── mobsf_controller.py     # MobSF REST API 인터페이스
+── static_pipeline.py      # MobSF 정적 분석 자동화
+── main.py                 # 전체 파이프라인 실행 (Entry Point)
 
 
 ## 🚀 사용 방법
 
-1. 의존 패키지 설치
+### 1. 의존 패키지 설치
 
 pip install -r requirements.txt
 ⚠ pdfkit 사용을 위해 wkhtmltopdf를 사전에 설치해야 합니다.
 
-2. 실행
+### 2. 실행
 
 python main.py
 
@@ -39,7 +39,7 @@ MobSF 서버 자동 실행
 리포트 다운로드 및 저장
 
 
-3. 주의 사항
+### 3. 주의 사항
 MobSF는 설치되어 있어야 하며, MobSF 작동에 필요한 설치가 먼저 완료 되어 있어야 합니다.
 분석할 APK는 APK_DIR에 위치해야 합니다.
 
@@ -67,7 +67,7 @@ adb remount        # 시스템 파티션 remount (쓰기 가능 상태로)
 adb shell "/data/local/tmp/frida-server &"  #Frida 서버 백그라운드 실행
 
 
-4. 개발 환경
+### 4. 개발 환경
 Python 3.12.8
 MobSF 최신 버전 (로컬 실행)
 ...
